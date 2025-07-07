@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numeron</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px 40px 20px;
+        }
+        
+        .header {
+            text-align: left;
+            margin-bottom: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px 0 0;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin: 0;
+            letter-spacing: -1px;
+        }
+        
+        .header-description {
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            opacity: 0.95;
+        }
+        
+        .header-help {
+            color: white;
+            font-size: 0.95rem;
+            opacity: 0.85;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .header-help-content {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        
+        .header-help-content span {
+            opacity: 0.9;
+        }
+        
+        .header-help-content strong {
+            font-weight: 600;
+            opacity: 1;
+        }
+        
+        .refresh-btn {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 18px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.4rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .refresh-btn:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.4);
+            transform: scale(1.1);
+        }
+        
+        .game-description {
+            text-align: left;
+            background: rgba(255,255,255,0.95);
+            padding: 8px 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .game-description .description-text {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr 200px;
+            gap: 30px;
+            align-items: start;
+            padding: 0 20px 0 0;
+        }
+        
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            justify-content: flex-start;
+        }
+        
+        .input-section {
+            background: rgba(255,255,255,0.98);
+            padding: 60px 50px;
+            border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            text-align: center;
+            margin-top: 0;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .digit-inputs {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .digit-input {
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            background: #f8f9fa;
+            color: #495057;
+            text-align: center;
+            width: 60px;
+            height: 50px;
+            transition: all 0.3s ease;
+        }
+        
+        .digit-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 5px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+        
+        .submit-btn {
+            padding: 30px 50px;
+            font-size: 1.4rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+            min-height: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-line;
+            line-height: 1.4;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .message.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        
+        .message.empty {
+            background: transparent;
+            border: none;
+            color: transparent;
+        }
+        
+        .message.double-call {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .items-header {
+            text-align: center;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .items-header h3 {
+            font-size: 1.1rem;
+            color: #667eea;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .item-btn {
+            padding: 12px 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            background: #f8f9fa;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+        
+        .item-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: scale(1.02);
+        }
+        
+        .item-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .item-btn.selected:hover {
+            background: #5a6fd8;
+            border-color: #5a6fd8;
+        }
+        
+        .item-btn:disabled {
+            background: #e9ecef;
+            color: #adb5bd;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .item-type {
+            font-size: 0.7rem;
+            opacity: 0.8;
+            margin-top: 2px;
+        }
+        
+        .item-ui {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border: 2px solid #e9ecef;
+        }
+        
+        .item-ui h4 {
+            font-size: 1rem;
+            color: #495057;
+            margin: 0 0 10px 0;
+            text-align: center;
+        }
+        
+        .digit-selector {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+        }
+        
+        .digit-btn {
+            padding: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .digit-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .digit-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .change-selector {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .position-selector, .group-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .position-selector label, .group-selector label {
+            font-weight: 600;
+            color: #495057;
+            min-width: 60px;
+        }
+        
+        .pos-btn, .group-btn {
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .pos-btn:hover, .group-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .pos-btn.selected, .group-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .right-panel {
+            background: rgba(255,255,255,0.98);
+            border-radius: 25px;
+            padding: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            height: auto;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .history-section {
+            flex: 1;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .history-header h2 {
+            font-size: 1.4rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+        
+        .history-count {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        
+        .history-list {
+            overflow-y: visible;
+        }
+        
+        .history-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 12px 18px;
+            margin: 8px 0;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .history-turn {
+            font-weight: 700;
+            color: white;
+            min-width: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .history-guess {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: white;
+            margin: 0 20px;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+        
+        .history-result {
+            background: rgba(255,255,255,0.95);
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            min-width: 70px;
+            text-align: center;
+        }
+        
+        .history-subtitle {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6c757d;
+            font-size: 1.3rem;
+            font-weight: 500;
+        }
+        
+        .help-section {
+            background: #f8f9fa;
+            padding: 15px 18px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .help-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            font-size: 0.9rem;
+        }
+        
+        .help-summary span {
+            color: #495057;
+        }
+        
+        .help-summary strong {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .memo-panel {
+            background: rgba(255,255,255,0.98);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            min-height: 400px;
+        }
+        
+        .memo-header {
+            text-align: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .memo-header h2 {
+            font-size: 1.2rem;
+            color: #667eea;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .memo-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .memo-column {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        
+        .memo-btn {
+            padding: 15px 6px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            background: #f8f9fa;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .memo-btn:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: scale(1.05);
+        }
+        
+        .memo-btn.excluded {
+            background: #6c757d;
+            color: white;
+            border-color: #6c757d;
+            text-decoration: line-through;
+        }
+        
+        .memo-btn.excluded:hover {
+            background: #5a6268;
+            border-color: #5a6268;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .refresh-btn {
+                right: 10px;
+                padding: 10px;
+                font-size: 1rem;
+            }
+            
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .digit-input {
+                width: 150px;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1>Numeron</h1>
+                <div class="header-description">3桁の数字を当ててください（各桁は0〜9で重複なし）</div>
+                <div class="header-help">
+                    <div class="header-help-content">
+                        <span><strong>EAT</strong>: 桁も数字も一致</span>
+                        <span><strong>BITE</strong>: 数字のみ一致</span>
+                        <span><strong>3EAT</strong>で勝利！</span>
+                    </div>
+                </div>
+            </div>
+            <button class="refresh-btn" onclick="refreshGame()">↻</button>
+        </div>
+        
+        <div class="main-content">
+            <div class="left-panel">
+                <div class="input-section">
+                    <form method="post" class="input-group" onsubmit="return handleSubmit(event)">
+                        <div class="digit-inputs">
+                            <input type="text" name="digit1" maxlength="1" pattern="\d" required class="digit-input" autocomplete="off" spellcheck="false">
+                            <input type="text" name="digit2" maxlength="1" pattern="\d" required class="digit-input" autocomplete="off" spellcheck="false">
+                            <input type="text" name="digit3" maxlength="1" pattern="\d" required class="digit-input" autocomplete="off" spellcheck="false">
+                        </div>
+                        <button type="submit" class="submit-btn">判定</button>
+                    </form>
+                    
+                    <div class="message {{ message_type if message else 'empty' }}">
+                        {% if message %}
+                            {{ message }}
+                        {% endif %}
+                    </div>
+                    
+                    <div class="items-header">
+                        <h3>🧩 使用可能アイテム（最大3つまで選択）</h3>
+                    </div>
+                    <div class="items-grid">
+                        <button class="item-btn" data-item="DOUBLE" data-type="攻撃">
+                            DOUBLE
+                            <div class="item-type">攻撃</div>
+                        </button>
+                        <button class="item-btn" data-item="HIGH_LOW" data-type="攻撃">
+                            HIGH_LOW
+                            <div class="item-type">攻撃</div>
+                        </button>
+                        <button class="item-btn" data-item="TARGET" data-type="攻撃">
+                            TARGET
+                            <div class="item-type">攻撃</div>
+                        </button>
+                    </div>
+                    <div class="items-grid">
+                        <button class="item-btn" data-item="SLASH" data-type="攻撃">
+                            SLASH
+                            <div class="item-type">攻撃</div>
+                        </button>
+                    </div>
+                    
+                    <!-- TARGETアイテム用の数字選択UI -->
+                    <div id="target-ui" class="item-ui" style="display: none;">
+                        <h4>TARGET: 調べる数字を選択</h4>
+                        <div class="digit-selector">
+                            <button class="digit-btn" onclick="selectTargetDigit(0)">0</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(1)">1</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(2)">2</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(3)">3</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(4)">4</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(5)">5</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(6)">6</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(7)">7</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(8)">8</button>
+                            <button class="digit-btn" onclick="selectTargetDigit(9)">9</button>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="right-panel">
+                <div class="history-section">
+                    <div class="history-header">
+                        <h2>予想履歴</h2>
+                        <span class="history-subtitle">EAT-BITE</span>
+                    </div>
+                    
+                    <div class="history-list">
+                        {% if history %}
+                            {% for item in history %}
+                                <div class="history-item">
+                                    <span class="history-turn">{{ item.split('.')[0] }}.</span>
+                                    <span class="history-guess">{{ item.split('→')[0].split('.')[1].strip() }}</span>
+                                    <span class="history-result">{{ item.split('→')[1].strip() }}</span>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <div class="empty-history">
+                                <p>開始前</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="memo-panel">
+                <div class="memo-header">
+                    <h2>memo</h2>
+                </div>
+                <div class="memo-grid">
+                    <div class="memo-column">
+                        <button class="memo-btn" onclick="toggleMemo(0)">0</button>
+                        <button class="memo-btn" onclick="toggleMemo(1)">1</button>
+                        <button class="memo-btn" onclick="toggleMemo(2)">2</button>
+                        <button class="memo-btn" onclick="toggleMemo(3)">3</button>
+                        <button class="memo-btn" onclick="toggleMemo(4)">4</button>
+                    </div>
+                    <div class="memo-column">
+                        <button class="memo-btn" onclick="toggleMemo(5)">5</button>
+                        <button class="memo-btn" onclick="toggleMemo(6)">6</button>
+                        <button class="memo-btn" onclick="toggleMemo(7)">7</button>
+                        <button class="memo-btn" onclick="toggleMemo(8)">8</button>
+                        <button class="memo-btn" onclick="toggleMemo(9)">9</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // メモ機能の状態管理
+        let excludedNumbers = new Set();
+        
+        // アイテム選択の状態管理
+        let selectedItems = new Set();
+        const MAX_ITEMS = 3;
+        
+        // TARGETアイテム用の状態管理
+        let selectedTargetDigit = null;
+        
+        function refreshGame() {
+            // メッセージエリアをクリア
+            const messageDiv = document.querySelector('.message');
+            messageDiv.textContent = '';
+            messageDiv.style.display = 'none';
+            
+            // ページをリロード
+            window.location.href = '/?new_game=true';
+        }
+        
+        function toggleMemo(number) {
+            const button = event.target;
+            if (excludedNumbers.has(number)) {
+                // 除外状態を解除
+                excludedNumbers.delete(number);
+                button.classList.remove('excluded');
+            } else {
+                // 除外状態にする
+                excludedNumbers.add(number);
+                button.classList.add('excluded');
+            }
+            
+            // ローカルストレージに保存
+            localStorage.setItem('numeronExcludedNumbers', JSON.stringify(Array.from(excludedNumbers)));
+        }
+        
+        function toggleItem(itemName) {
+            console.log('toggleItem called with:', itemName);
+            
+            // ボタンをdata-item属性で検索
+            const button = document.querySelector(`button[data-item="${itemName}"]`);
+            console.log('button found:', button);
+            
+            if (!button) {
+                console.log('Button not found, returning');
+                return; // ボタンが見つからない場合は処理を中断
+            }
+            
+            console.log('Current selectedItems:', Array.from(selectedItems));
+            
+            if (selectedItems.has(itemName)) {
+                // 選択解除
+                console.log('Removing item:', itemName);
+                selectedItems.delete(itemName);
+                button.classList.remove('selected');
+                
+                // UIを非表示
+                if (itemName === 'TARGET') {
+                    document.getElementById('target-ui').style.display = 'none';
+                    selectedTargetDigit = null;
+                }
+            } else {
+                // 選択
+                if (selectedItems.size >= MAX_ITEMS) {
+                    alert('最大3つまで選択できます');
+                    return;
+                }
+                console.log('Adding item:', itemName);
+                selectedItems.add(itemName);
+                button.classList.add('selected');
+                
+                // 特殊UIを表示
+                if (itemName === 'TARGET') {
+                    document.getElementById('target-ui').style.display = 'block';
+                }
+                
+                // 数字入力が不要なアイテムは即座に実行
+                if (['DOUBLE', 'HIGH_LOW', 'SLASH'].includes(itemName)) {
+                    useItemImmediately(itemName);
+                }
+            }
+            
+            console.log('Updated selectedItems:', Array.from(selectedItems));
+            
+            // ローカルストレージに保存
+            localStorage.setItem('numeronSelectedItems', JSON.stringify(Array.from(selectedItems)));
+            
+            // 選択状態に応じてボタンの有効/無効を切り替え
+            updateItemButtons();
+        }
+        
+        function useItemImmediately(itemName) {
+            console.log('Using item immediately:', itemName);
+            
+            fetch('/use-item', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ item: itemName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // アイテム効果を表示
+                    showItemResult(data.result.effect);
+                    // アイテムを選択解除
+                    selectedItems.delete(itemName);
+                    const button = document.querySelector(`button[data-item="${itemName}"]`);
+                    if (button) {
+                        button.classList.remove('selected');
+                    }
+                    localStorage.setItem('numeronSelectedItems', JSON.stringify(Array.from(selectedItems)));
+                    updateItemButtons();
+                } else {
+                    alert('アイテム使用に失敗しました: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('アイテム使用中にエラーが発生しました');
+            });
+        }
+        
+        function updateItemButtons() {
+            const itemButtons = document.querySelectorAll('.item-btn');
+            itemButtons.forEach(button => {
+                const itemName = button.getAttribute('data-item');
+                if (!selectedItems.has(itemName) && selectedItems.size >= MAX_ITEMS) {
+                    button.disabled = true;
+                } else {
+                    button.disabled = false;
+                }
+            });
+        }
+        
+        function showItemResult(result) {
+            // アイテム結果をメッセージエリアに表示
+            const messageDiv = document.querySelector('.message');
+            
+            // 既存のメッセージがある場合は改行して追加
+            if (messageDiv.textContent && messageDiv.textContent.trim() !== '') {
+                messageDiv.textContent += '\n' + result;
+            } else {
+                messageDiv.textContent = result;
+            }
+            
+            messageDiv.className = 'message info';
+            messageDiv.style.display = 'flex';
+        }
+        
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            // 3つの入力フィールドから数字を取得
+            const digit1 = document.querySelector('input[name="digit1"]').value;
+            const digit2 = document.querySelector('input[name="digit2"]').value;
+            const digit3 = document.querySelector('input[name="digit3"]').value;
+            
+            // 入力値の確認
+            if (!digit1 || !digit2 || !digit3) {
+                alert('全ての桁に数字を入力してください');
+                return false;
+            }
+            
+            // 3桁の数字を結合
+            const guessStr = digit1 + digit2 + digit3;
+            
+            // 数字入力が必要なアイテムかチェック
+            const requiresInput = ['TARGET'].some(item => selectedItems.has(item));
+            
+            if (requiresInput) {
+                // アイテムの要件チェック
+                for (let itemName of selectedItems) {
+                    if (itemName === 'TARGET' && selectedTargetDigit === null) {
+                        alert('TARGETアイテムには数字の選択が必要です');
+                        return false;
+                    }
+                }
+                
+                // フォームにアイテム情報を追加
+                const form = event.target;
+                
+                // 既存のアイテム入力フィールドを削除
+                form.querySelectorAll('input[name="used_items"]').forEach(input => input.remove());
+                
+                // 新しいアイテム入力フィールドを追加
+                selectedItems.forEach(itemName => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'used_items';
+                    input.value = itemName;
+                    form.appendChild(input);
+                });
+                
+                // TARGETアイテムの数字情報を追加
+                if (selectedItems.has('TARGET') && selectedTargetDigit !== null) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'target_digit';
+                    input.value = selectedTargetDigit;
+                    form.appendChild(input);
+                }
+                
+                // 3桁の数字を隠しフィールドに追加
+                const guessInput = document.createElement('input');
+                guessInput.type = 'hidden';
+                guessInput.name = 'guess';
+                guessInput.value = guessStr;
+                form.appendChild(guessInput);
+                
+                // フォームを送信
+                form.submit();
+            } else {
+                // 数字入力が不要なアイテムは直接API呼び出し
+                selectedItems.forEach(itemName => {
+                    fetch('/use-item', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ item: itemName })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // アイテム効果を表示
+                            showItemResult(data.result.effect);
+                        } else {
+                            alert('アイテム使用に失敗しました: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('アイテム使用中にエラーが発生しました');
+                    });
+                });
+                
+                // 3桁の数字を隠しフィールドに追加してフォーム送信
+                const form = event.target;
+                const guessInput = document.createElement('input');
+                guessInput.type = 'hidden';
+                guessInput.name = 'guess';
+                guessInput.value = guessStr;
+                form.appendChild(guessInput);
+                form.submit();
+            }
+            
+            // アイテム選択状態をリセット
+            selectedItems.clear();
+            selectedTargetDigit = null;
+            
+            // UIをリセット
+            document.querySelectorAll('.item-btn').forEach(btn => btn.classList.remove('selected'));
+            document.querySelectorAll('.digit-btn').forEach(btn => btn.classList.remove('selected'));
+            document.getElementById('target-ui').style.display = 'none';
+            
+            // ローカルストレージをクリア
+            localStorage.removeItem('numeronSelectedItems');
+            updateItemButtons();
+            
+            return false;
+        }
+        
+        function selectTargetDigit(digit) {
+            selectedTargetDigit = digit;
+            
+            // ボタンの選択状態を更新
+            document.querySelectorAll('.digit-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+        
+        // ページ読み込み時にメモ状態を復元
+        document.addEventListener('DOMContentLoaded', function() {
+            // 最初の入力フィールドにフォーカス
+            document.querySelector('input[name="digit1"]').focus();
+            
+            // 入力フィールド間の自動フォーカス移動
+            const digitInputs = document.querySelectorAll('.digit-input');
+            digitInputs.forEach((input, index) => {
+                input.addEventListener('input', function() {
+                    if (this.value.length === 1 && index < digitInputs.length - 1) {
+                        digitInputs[index + 1].focus();
+                    }
+                });
+                
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                        digitInputs[index - 1].focus();
+                    }
+                });
+            });
+            
+            // アイテムボタンにイベントリスナーを追加
+            const itemButtons = document.querySelectorAll('.item-btn');
+            itemButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const itemName = this.getAttribute('data-item');
+                    console.log('Item button clicked:', itemName);
+                    toggleItem(itemName);
+                });
+            });
+            
+            // メモ状態を復元
+            const savedExcluded = localStorage.getItem('numeronExcludedNumbers');
+            if (savedExcluded) {
+                excludedNumbers = new Set(JSON.parse(savedExcluded));
+                updateMemoButtons();
+            }
+            
+            // アイテム選択状態を復元
+            const savedItems = localStorage.getItem('numeronSelectedItems');
+            if (savedItems) {
+                selectedItems = new Set(JSON.parse(savedItems));
+                selectedItems.forEach(itemName => {
+                    const button = document.querySelector(`button[data-item="${itemName}"]`);
+                    if (button) {
+                        button.classList.add('selected');
+                        if (itemName === 'TARGET') {
+                            document.getElementById('target-ui').style.display = 'block';
+                        }
+                    }
+                });
+                updateItemButtons();
+            }
+            
+            // DOUBLEコール状態をチェック
+            checkDoubleCallStatus();
+        });
+        
+        function checkDoubleCallStatus() {
+            // セッションからDOUBLEコール可能状態を確認
+            fetch('/check-double-call')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.double_call_available) {
+                        // DOUBLEコール可能な場合、特別なUIを表示
+                        showDoubleCallUI();
+                    }
+                })
+                .catch(error => console.error('Error checking double call status:', error));
+        }
+        
+        function showDoubleCallUI() {
+            // DOUBLEコール用の特別なUIを表示
+            const messageDiv = document.querySelector('.message');
+            messageDiv.textContent = 'DOUBLE効果発動中！2回連続でコールできます';
+            messageDiv.className = 'message double-call';
+            messageDiv.style.display = 'flex';
+        }
+    </script>
+</body>
+</html> 

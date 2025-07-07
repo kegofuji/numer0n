@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numeron - 結果</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .result-section {
+            padding: 40px;
+        }
+        
+        .result-box {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .result-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            z-index: 0;
+        }
+        
+        .winner {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border: 3px solid #28a745;
+        }
+        
+        .winner::before {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%2328a745"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>') repeat;
+        }
+        
+        .loser {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border: 3px solid #dc3545;
+        }
+        
+        .loser::before {
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23dc3545"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>') repeat;
+        }
+        
+        .result-box h2 {
+            margin: 0 0 20px 0;
+            font-size: 3em;
+            font-weight: 300;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .winner h2 {
+            color: #155724;
+        }
+        
+        .loser h2 {
+            color: #721c24;
+        }
+        
+        .result-box p {
+            font-size: 1.2em;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            line-height: 1.6;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        
+        .stat-card h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .stat-card .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 0;
+        }
+        
+        .new-game-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+        
+        .new-game-btn {
+            padding: 20px 50px;
+            font-size: 18px;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 10px 25px rgba(40, 167, 69, 0.3);
+        }
+        
+        .new-game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(40, 167, 69, 0.4);
+        }
+        
+        .new-game-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .history-section {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+        }
+        
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .history-header h2 {
+            margin: 0;
+            color: #495057;
+            font-size: 1.5em;
+        }
+        
+        .history-count {
+            background: #667eea;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        
+        .history-list {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .history-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb {
+            background: #667eea;
+            border-radius: 10px;
+        }
+        
+        .history-item {
+            background: white;
+            padding: 15px 20px;
+            margin: 10px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 4px solid #667eea;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .history-item:nth-child(even) {
+            border-left-color: #28a745;
+        }
+        
+        .history-item:nth-child(3n) {
+            border-left-color: #ffc107;
+        }
+        
+        .history-turn {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 80px;
+        }
+        
+        .history-guess {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            margin: 0 15px;
+        }
+        
+        .history-result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        
+        .empty-history {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .achievement {
+            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ffc107;
+            text-align: center;
+        }
+        
+        .achievement h3 {
+            margin: 0 0 10px 0;
+            color: #856404;
+        }
+        
+        .achievement p {
+            margin: 0;
+            color: #856404;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .result-box h2 {
+                font-size: 2.5em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-item {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Numeron Game</h1>
+        </div>
+        
+        <div class="result-section">
+            <div class="result-box {% if winner == 'player' %}winner{% else %}loser{% endif %}">
+                {% if winner == 'player' %}
+                    <h2>🏆 勝利！</h2>
+                    <p>おめでとうございます！{{ turn }}ターンでコンピュータの数字を正しく当てることができました。<br>
+                    素晴らしい推理力です！</p>
+                {% else %}
+                    <h2>😔 残念...</h2>
+                    <p>{{ turn }}ターン挑戦しましたが、正解できませんでした。<br>
+                    もう一度挑戦して、今度こそ正解を目指しましょう！</p>
+                {% endif %}
+            </div>
+            
+            {% if winner == 'player' %}
+                <div class="achievement">
+                    <h3>🎯 達成記録</h3>
+                    <p>{{ turn }}ターンでのクリア！{% if turn <= 5 %}素晴らしい成績です！{% elif turn <= 8 %}良い成績です！{% else %}頑張りました！{% endif %}</p>
+                </div>
+            {% endif %}
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>使用ターン数</h3>
+                    <p class="number">{{ turn }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>予想回数</h3>
+                    <p class="number">{{ history|length }}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>成功率</h3>
+                    <p class="number">{% if winner == 'player' %}100%{% else %}0%{% endif %}</p>
+                </div>
+                <div class="stat-card">
+                    <h3>平均EAT</h3>
+                    <p class="number">
+                        {% if history %}
+                            {% set total_eat = 0 %}
+                            {% for item in history %}
+                                {% set eat = item.split('EAT')[0].split('→')[1].strip() %}
+                                {% set total_eat = total_eat + eat|int %}
+                            {% endfor %}
+                            {{ "%.1f"|format(total_eat / history|length) }}
+                        {% else %}
+                            0
+                        {% endif %}
+                    </p>
+                </div>
+            </div>
+            
+            <form method="post" class="new-game-section">
+                <button type="submit" class="new-game-btn">新しいゲームを始める</button>
+            </form>
+            
+            <div class="history-section">
+                <div class="history-header">
+                    <h2>📝 予想履歴</h2>
+                    <span class="history-count">{{ history|length }}回</span>
+                </div>
+                
+                <div class="history-list">
+                    {% if history %}
+                        {% for item in history %}
+                            <div class="history-item">
+                                <span class="history-turn">{{ item.split(':')[0] }}</span>
+                                <span class="history-guess">{{ item.split('→')[0].split(':')[1].strip() }}</span>
+                                <span class="history-result">{{ item.split('→')[1].strip() }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-history">
+                            <p>履歴がありません</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 
