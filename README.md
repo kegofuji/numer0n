@@ -5,18 +5,20 @@
 ## プロジェクト構造
 
 ```
-numeron/
+numer0n/
 ├── backend/
-│   ├── app.py          # Flaskサーバー（メインロジック）
-│   ├── models.py       # データモデル
-│   ├── config.py       # 設定ファイル
-│   └── requirements.txt # Python依存関係
+│   ├── app.py            # Flaskサーバー（メインロジック）
+│   ├── config.py         # 設定ファイル
+│   ├── env_example.txt   # 環境変数サンプル
+│   ├── logs/             # バックエンドログ保存用ディレクトリ
+│   └── requirements.txt  # Python依存関係
 ├── frontend/
-│   ├── templates/
-│   │   └── game.html   # メインゲーム画面
-│   └── static/
-│       ├── game_item.js # アイテム機能
-│       └── game_memo.js # メモ機能
+│   ├── static/
+│   │   ├── game_item.js  # アイテム機能
+│   │   └── game_memo.js  # メモ機能
+│   └── templates/
+│       └── game.html     # メインゲーム画面
+├── logs/                 # ルートログ保存用ディレクトリ
 └── README.md
 ```
 
@@ -47,10 +49,7 @@ numeron/
 - 3 EATで正解！
 
 ### アイテム機能
-- **SLASH**: 第1段階の最大値 - 最小値を表示
 - **GIVEUP**: 答えを公開し、ゲーム続行（メモリセット）
-- **HIGH_LOW**: 各桁の値がHIGH(5-9)かLOW(0-4)かを表示
-- **TARGET**: 指定した1桁の数字が含まれている場合、位置(百/十/一)を表示
 
 ### メモ機能
 - 0~9ボタンでグレーON/OFF切り替え
