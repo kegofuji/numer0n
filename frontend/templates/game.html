@@ -84,24 +84,6 @@
             opacity: 1;
         }
         
-        .refresh-btn {
-            background: rgba(255,255,255,0.1);
-            border: 2px solid rgba(255,255,255,0.2);
-            color: white;
-            padding: 18px;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.4rem;
-            backdrop-filter: blur(10px);
-        }
-        
-        .refresh-btn:hover {
-            background: rgba(255,255,255,0.2);
-            border-color: rgba(255,255,255,0.4);
-            transform: scale(1.1);
-        }
-        
         .game-description {
             text-align: left;
             background: rgba(255,255,255,0.95);
@@ -232,12 +214,6 @@
             background: transparent;
             border: none;
             color: transparent;
-        }
-        
-        .message.double-call {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
         }
         
         .items-header {
@@ -516,71 +492,7 @@
             font-weight: 600;
         }
         
-        .memo-panel {
-            background: rgba(255,255,255,0.98);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            border: 1px solid rgba(255,255,255,0.2);
-            min-height: 400px;
-        }
-        
-        .memo-header {
-            text-align: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e9ecef;
-        }
-        
-        .memo-header h2 {
-            font-size: 1.2rem;
-            color: #667eea;
-            font-weight: 700;
-            margin: 0;
-        }
-        
-        .memo-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        
-        .memo-column {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        
-        .memo-btn {
-            padding: 15px 6px;
-            font-size: 1rem;
-            font-weight: 700;
-            border: 2px solid #e9ecef;
-            border-radius: 8px;
-            background: #f8f9fa;
-            color: #495057;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-        
-        .memo-btn:hover {
-            background: #e9ecef;
-            border-color: #667eea;
-            transform: scale(1.05);
-        }
-        
-        .memo-btn.excluded {
-            background: #6c757d;
-            color: white;
-            border-color: #6c757d;
-            text-decoration: line-through;
-        }
-        
-        .memo-btn.excluded:hover {
-            background: #5a6268;
-            border-color: #5a6268;
-        }
+
         
         @media (max-width: 768px) {
             .container {
@@ -589,12 +501,6 @@
             
             .header h1 {
                 font-size: 2.5rem;
-            }
-            
-            .refresh-btn {
-                right: 10px;
-                padding: 10px;
-                font-size: 1rem;
             }
             
             .main-content {
@@ -616,6 +522,33 @@
                 gap: 10px;
             }
         }
+        .item-btn.used {
+            background: #6c757d !important;
+            color: #fff !important;
+            opacity: 0.6 !important;
+            cursor: not-allowed !important;
+            filter: grayscale(1) brightness(0.7) !important;
+            pointer-events: none !important;
+        }
+        
+
+        
+        .history-item.item-giveup {
+            background: linear-gradient(135deg, #E53935 0%, #D32F2F 100%) !important;
+            color: #fff !important;
+        }
+        
+        .history-item.item-giveup .history-guess {
+            color: #fff !important;
+        }
+        
+        .history-item.item-giveup .history-result {
+            background: rgba(255,255,255,0.95) !important;
+            color: #E53935 !important;
+            font-weight: bold !important;
+        }
+        
+
     </style>
 </head>
 <body>
@@ -632,7 +565,7 @@
                     </div>
                 </div>
             </div>
-            <button class="refresh-btn" onclick="refreshGame()">↻</button>
+            
         </div>
         
         <div class="main-content">
@@ -640,11 +573,113 @@
                 <div class="input-section">
                     <form method="post" class="input-group" onsubmit="return handleSubmit(event)">
                         <div class="digit-inputs">
-                            <input type="text" name="digit1" maxlength="1" pattern="\d" required class="digit-input" autocomplete="off" spellcheck="false">
-                            <input type="text" name="digit2" maxlength="1" pattern="\d" required class="digit-input" autocomplete="off" spellcheck="false">
-                            <input type="text" name="digit3" maxlength="1" pattern="\d" required class="digit-input" autocomplete="off" spellcheck="false">
+                            <input type="text" name="digit1" id="digit1" maxlength="1" pattern="\d" class="digit-input" autocomplete="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                            <input type="text" name="digit2" id="digit2" maxlength="1" pattern="\d" class="digit-input" autocomplete="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                            <input type="text" name="digit3" id="digit3" maxlength="1" pattern="\d" class="digit-input" autocomplete="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')">
+                            <button type="submit" class="submit-btn" id="submit-btn" style="display: none;">判定</button>
                         </div>
-                        <button type="submit" class="submit-btn">判定</button>
+                        
+                        
+                        
+                        <div class="items-vertical">
+                                            <button type="button" class="item-btn item-giveup" data-item="GIVEUP" onclick="useItemForm('GIVEUP')" id="item-GIVEUP">GIVEUP</button>
+                            <input type="hidden" name="used_item" id="used-item-input">
+                        </div>
+                        <style>
+                            .items-vertical {
+                                display: flex !important;
+                                flex-direction: column !important;
+                                gap: 16px !important;
+                                margin: 20px 0 !important;
+                                width: 100%;
+                            }
+                            .item-btn {
+                                width: 100% !important;
+                                font-size: 1.2rem !important;
+                                padding: 18px 0 !important;
+                                box-sizing: border-box;
+                                border: none;
+                                border-radius: 10px;
+                                color: white;
+                                font-weight: bold;
+                                opacity: 0.85;
+                                transition: background 0.2s, opacity 0.2s;
+                            }
+                            .item-highlow { background: #4F8EF7; }
+                            .item-target { background: #FF9800; }
+                            .item-slash  { background: #43A047; }
+                            .item-giveup { background: #E53935; }
+                            .item-btn.selected, .item-btn:active {
+                                opacity: 1.0;
+                                box-shadow: 0 0 0 3px rgba(0,0,0,0.08);
+                                filter: brightness(1.1);
+                            }
+                            .item-btn:not(.selected):hover {
+                                opacity: 1.0;
+                                filter: brightness(1.08);
+                            }
+                            .item-btn:not(.selected) {
+                                filter: grayscale(0.2) brightness(0.95);
+                            }
+                            .item-btn.used {
+                                background: #6c757d !important;
+                                color: #fff !important;
+                                opacity: 0.6 !important;
+                                cursor: not-allowed !important;
+                                filter: grayscale(1) brightness(0.7) !important;
+                                pointer-events: none !important;
+                                box-shadow: none !important;
+                            }
+                            
+                            /* TARGET数字選択UIのスタイル */
+                            #target-ui {
+                                background: rgba(255, 193, 7, 0.1);
+                                border: 2px solid #FF9800;
+                                border-radius: 15px;
+                                padding: 20px;
+                                margin: 15px 0;
+                                text-align: center;
+                            }
+                            
+                            #target-ui h4 {
+                                color: #FF9800;
+                                font-weight: bold;
+                                margin-bottom: 15px;
+                                font-size: 1.1rem;
+                            }
+                            
+                            .digit-selector {
+                                display: grid;
+                                grid-template-columns: repeat(5, 1fr);
+                                gap: 8px;
+                                max-width: 300px;
+                                margin: 0 auto;
+                            }
+                            
+                            .digit-btn {
+                                padding: 12px;
+                                font-size: 1.1rem;
+                                font-weight: bold;
+                                border: 2px solid #FF9800;
+                                border-radius: 8px;
+                                background: white;
+                                color: #FF9800;
+                                cursor: pointer;
+                                transition: all 0.2s ease;
+                            }
+                            
+                            .digit-btn:hover {
+                                background: #FF9800;
+                                color: white;
+                                transform: scale(1.05);
+                            }
+                            
+                            .digit-btn.selected {
+                                background: #FF9800;
+                                color: white;
+                                box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.3);
+                            }
+                        </style>
                     </form>
                     
                     <div class="message {{ message_type if message else 'empty' }}">
@@ -653,46 +688,9 @@
                         {% endif %}
                     </div>
                     
-                    <div class="items-header">
-                        <h3>🧩 使用可能アイテム（最大3つまで選択）</h3>
-                    </div>
-                    <div class="items-grid">
-                        <button class="item-btn" data-item="DOUBLE" data-type="攻撃">
-                            DOUBLE
-                            <div class="item-type">攻撃</div>
-                        </button>
-                        <button class="item-btn" data-item="HIGH_LOW" data-type="攻撃">
-                            HIGH_LOW
-                            <div class="item-type">攻撃</div>
-                        </button>
-                        <button class="item-btn" data-item="TARGET" data-type="攻撃">
-                            TARGET
-                            <div class="item-type">攻撃</div>
-                        </button>
-                    </div>
-                    <div class="items-grid">
-                        <button class="item-btn" data-item="SLASH" data-type="攻撃">
-                            SLASH
-                            <div class="item-type">攻撃</div>
-                        </button>
-                    </div>
-                    
-                    <!-- TARGETアイテム用の数字選択UI -->
-                    <div id="target-ui" class="item-ui" style="display: none;">
-                        <h4>TARGET: 調べる数字を選択</h4>
-                        <div class="digit-selector">
-                            <button class="digit-btn" onclick="selectTargetDigit(0)">0</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(1)">1</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(2)">2</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(3)">3</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(4)">4</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(5)">5</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(6)">6</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(7)">7</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(8)">8</button>
-                            <button class="digit-btn" onclick="selectTargetDigit(9)">9</button>
-                        </div>
-                    </div>
+                    <!-- アイテム選択の見出しや説明、item-typeなどを完全に削除し、ボタンのみ表示 -->
+                    <!-- items-headerやitem-typeクラスのdiv・spanも削除 -->
+                    <!-- 既存のitems-grid内のボタンだけを残す -->
                     
                 </div>
             </div>
@@ -707,10 +705,14 @@
                     <div class="history-list">
                         {% if history %}
                             {% for item in history %}
-                                <div class="history-item">
-                                    <span class="history-turn">{{ item.split('.')[0] }}.</span>
+                                <div class="history-item {% if 'GIVEUP' in item %}item-giveup{% endif %}">
+                                    {% if '→' in item %}
+                                    <span class="history-turn">{{ loop.index }}.</span>
                                     <span class="history-guess">{{ item.split('→')[0].split('.')[1].strip() }}</span>
                                     <span class="history-result">{{ item.split('→')[1].strip() }}</span>
+                                    {% else %}
+                                        <span class="history-guess" style="font-weight: bold;">{{ item }}</span>
+                                    {% endif %}
                                 </div>
                             {% endfor %}
                         {% else %}
@@ -722,383 +724,185 @@
                 </div>
             </div>
             
-            <div class="memo-panel">
-                <div class="memo-header">
-                    <h2>memo</h2>
-                </div>
-                <div class="memo-grid">
-                    <div class="memo-column">
-                        <button class="memo-btn" onclick="toggleMemo(0)">0</button>
-                        <button class="memo-btn" onclick="toggleMemo(1)">1</button>
-                        <button class="memo-btn" onclick="toggleMemo(2)">2</button>
-                        <button class="memo-btn" onclick="toggleMemo(3)">3</button>
-                        <button class="memo-btn" onclick="toggleMemo(4)">4</button>
-                    </div>
-                    <div class="memo-column">
-                        <button class="memo-btn" onclick="toggleMemo(5)">5</button>
-                        <button class="memo-btn" onclick="toggleMemo(6)">6</button>
-                        <button class="memo-btn" onclick="toggleMemo(7)">7</button>
-                        <button class="memo-btn" onclick="toggleMemo(8)">8</button>
-                        <button class="memo-btn" onclick="toggleMemo(9)">9</button>
-                    </div>
-                </div>
-            </div>
+
         </div>
     </div>
     
     <script>
-        // メモ機能の状態管理
-        let excludedNumbers = new Set();
-        
-        // アイテム選択の状態管理
-        let selectedItems = new Set();
-        const MAX_ITEMS = 3;
-        
-        // TARGETアイテム用の状態管理
-        let selectedTargetDigit = null;
-        
-        function refreshGame() {
-            // メッセージエリアをクリア
-            const messageDiv = document.querySelector('.message');
-            messageDiv.textContent = '';
-            messageDiv.style.display = 'none';
-            
-            // ページをリロード
-            window.location.href = '/?new_game=true';
-        }
-        
-        function toggleMemo(number) {
-            const button = event.target;
-            if (excludedNumbers.has(number)) {
-                // 除外状態を解除
-                excludedNumbers.delete(number);
-                button.classList.remove('excluded');
-            } else {
-                // 除外状態にする
-                excludedNumbers.add(number);
-                button.classList.add('excluded');
+        // アイテム使用（フォーム送信方式）
+        function useItemForm(itemName) {
+            const btn = document.querySelector(`button[data-item="${itemName}"]`);
+            if (btn && btn.classList.contains('used')) {
+                alert('このアイテムは既に使用済みです');
+                return;
             }
             
-            // ローカルストレージに保存
-            localStorage.setItem('numeronExcludedNumbers', JSON.stringify(Array.from(excludedNumbers)));
-        }
-        
-        function toggleItem(itemName) {
-            console.log('toggleItem called with:', itemName);
-            
-            // ボタンをdata-item属性で検索
-            const button = document.querySelector(`button[data-item="${itemName}"]`);
-            console.log('button found:', button);
-            
-            if (!button) {
-                console.log('Button not found, returning');
-                return; // ボタンが見つからない場合は処理を中断
+            // 1ターンにアイテム1個制限チェック
+            const usedItems = JSON.parse(localStorage.getItem('numeronUsedItems') || '[]');
+            if (usedItems.length > 0) {
+                alert('このターンでは既にアイテムを使用しています。1ターンにアイテムは1個まで使用できます。');
+                return;
             }
             
-            console.log('Current selectedItems:', Array.from(selectedItems));
+            // 使用したアイテムをグレーアウト
+            btn.classList.add('used');
             
-            if (selectedItems.has(itemName)) {
-                // 選択解除
-                console.log('Removing item:', itemName);
-                selectedItems.delete(itemName);
-                button.classList.remove('selected');
-                
-                // UIを非表示
-                if (itemName === 'TARGET') {
-                    document.getElementById('target-ui').style.display = 'none';
-                    selectedTargetDigit = null;
-                }
-            } else {
-                // 選択
-                if (selectedItems.size >= MAX_ITEMS) {
-                    alert('最大3つまで選択できます');
-                    return;
-                }
-                console.log('Adding item:', itemName);
-                selectedItems.add(itemName);
-                button.classList.add('selected');
-                
-                // 特殊UIを表示
-                if (itemName === 'TARGET') {
-                    document.getElementById('target-ui').style.display = 'block';
-                }
-                
-                // 数字入力が不要なアイテムは即座に実行
-                if (['DOUBLE', 'HIGH_LOW', 'SLASH'].includes(itemName)) {
-                    useItemImmediately(itemName);
-                }
-            }
-            
-            console.log('Updated selectedItems:', Array.from(selectedItems));
-            
-            // ローカルストレージに保存
-            localStorage.setItem('numeronSelectedItems', JSON.stringify(Array.from(selectedItems)));
-            
-            // 選択状態に応じてボタンの有効/無効を切り替え
-            updateItemButtons();
-        }
-        
-        function useItemImmediately(itemName) {
-            console.log('Using item immediately:', itemName);
-            
-            fetch('/use-item', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ item: itemName })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // アイテム効果を表示
-                    showItemResult(data.result.effect);
-                    // アイテムを選択解除
-                    selectedItems.delete(itemName);
-                    const button = document.querySelector(`button[data-item="${itemName}"]`);
-                    if (button) {
-                        button.classList.remove('selected');
-                    }
-                    localStorage.setItem('numeronSelectedItems', JSON.stringify(Array.from(selectedItems)));
-                    updateItemButtons();
-                } else {
-                    alert('アイテム使用に失敗しました: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('アイテム使用中にエラーが発生しました');
-            });
-        }
-        
-        function updateItemButtons() {
-            const itemButtons = document.querySelectorAll('.item-btn');
-            itemButtons.forEach(button => {
-                const itemName = button.getAttribute('data-item');
-                if (!selectedItems.has(itemName) && selectedItems.size >= MAX_ITEMS) {
-                    button.disabled = true;
-                } else {
-                    button.disabled = false;
+            // 1ターンにアイテム1個制限：他のアイテムも無効化
+            document.querySelectorAll('.item-btn').forEach(button => {
+                if (button !== btn) {
+                    button.classList.add('used');
                 }
             });
-        }
-        
-        function showItemResult(result) {
-            // アイテム結果をメッセージエリアに表示
-            const messageDiv = document.querySelector('.message');
             
-            // 既存のメッセージがある場合は改行して追加
-            if (messageDiv.textContent && messageDiv.textContent.trim() !== '') {
-                messageDiv.textContent += '\n' + result;
-            } else {
-                messageDiv.textContent = result;
-            }
+            // 使用済みアイテムをローカルストレージに保存
+            usedItems.push(itemName);
+            localStorage.setItem('numeronUsedItems', JSON.stringify(usedItems));
             
-            messageDiv.className = 'message info';
-            messageDiv.style.display = 'flex';
+            document.getElementById('used-item-input').value = itemName;
+            document.querySelector('form.input-group').submit();
         }
+
+
         
         function handleSubmit(event) {
-            event.preventDefault();
-            
-            // 3つの入力フィールドから数字を取得
             const digit1 = document.querySelector('input[name="digit1"]').value;
             const digit2 = document.querySelector('input[name="digit2"]').value;
             const digit3 = document.querySelector('input[name="digit3"]').value;
-            
-            // 入力値の確認
-            if (!digit1 || !digit2 || !digit3) {
-                alert('全ての桁に数字を入力してください');
+            const usedItem = document.getElementById('used-item-input').value;
+            if ((digit1 || digit2 || digit3) && usedItem) {
+                alert('数字入力とアイテム使用は同時にできません。どちらか一方だけ入力してください。');
+                event.preventDefault();
                 return false;
             }
-            
-            // 3桁の数字を結合
-            const guessStr = digit1 + digit2 + digit3;
-            
-            // 数字入力が必要なアイテムかチェック
-            const requiresInput = ['TARGET'].some(item => selectedItems.has(item));
-            
-            if (requiresInput) {
-                // アイテムの要件チェック
-                for (let itemName of selectedItems) {
-                    if (itemName === 'TARGET' && selectedTargetDigit === null) {
-                        alert('TARGETアイテムには数字の選択が必要です');
-                        return false;
-                    }
-                }
-                
-                // フォームにアイテム情報を追加
-                const form = event.target;
-                
-                // 既存のアイテム入力フィールドを削除
-                form.querySelectorAll('input[name="used_items"]').forEach(input => input.remove());
-                
-                // 新しいアイテム入力フィールドを追加
-                selectedItems.forEach(itemName => {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'used_items';
-                    input.value = itemName;
-                    form.appendChild(input);
-                });
-                
-                // TARGETアイテムの数字情報を追加
-                if (selectedItems.has('TARGET') && selectedTargetDigit !== null) {
-                    const input = document.createElement('input');
-                    input.type = 'hidden';
-                    input.name = 'target_digit';
-                    input.value = selectedTargetDigit;
-                    form.appendChild(input);
-                }
-                
-                // 3桁の数字を隠しフィールドに追加
-                const guessInput = document.createElement('input');
-                guessInput.type = 'hidden';
-                guessInput.name = 'guess';
-                guessInput.value = guessStr;
-                form.appendChild(guessInput);
-                
-                // フォームを送信
-                form.submit();
-            } else {
-                // 数字入力が不要なアイテムは直接API呼び出し
-                selectedItems.forEach(itemName => {
-                    fetch('/use-item', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ item: itemName })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            // アイテム効果を表示
-                            showItemResult(data.result.effect);
-                        } else {
-                            alert('アイテム使用に失敗しました: ' + data.error);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('アイテム使用中にエラーが発生しました');
-                    });
-                });
-                
-                // 3桁の数字を隠しフィールドに追加してフォーム送信
-                const form = event.target;
-                const guessInput = document.createElement('input');
-                guessInput.type = 'hidden';
-                guessInput.name = 'guess';
-                guessInput.value = guessStr;
-                form.appendChild(guessInput);
-                form.submit();
+            if (!(digit1 && digit2 && digit3) && !usedItem) {
+                alert('数字またはアイテムのいずれかを入力・選択してください。');
+                event.preventDefault();
+                return false;
             }
-            
-            // アイテム選択状態をリセット
-            selectedItems.clear();
-            selectedTargetDigit = null;
-            
-            // UIをリセット
-            document.querySelectorAll('.item-btn').forEach(btn => btn.classList.remove('selected'));
-            document.querySelectorAll('.digit-btn').forEach(btn => btn.classList.remove('selected'));
-            document.getElementById('target-ui').style.display = 'none';
-            
-            // ローカルストレージをクリア
-            localStorage.removeItem('numeronSelectedItems');
-            updateItemButtons();
-            
-            return false;
+
+            // 数字入力時はguessをhiddenで送信
+            if (digit1 && digit2 && digit3 && !usedItem) {
+                let guessInput = document.querySelector('input[name="guess"]');
+                if (!guessInput) {
+                    guessInput = document.createElement('input');
+                    guessInput.type = 'hidden';
+                    guessInput.name = 'guess';
+                    event.target.appendChild(guessInput);
+                }
+                guessInput.value = digit1 + digit2 + digit3;
+                
+                // 数字入力時に使用済みアイテムをリセット（新しいターン）
+                localStorage.removeItem('numeronUsedItems');
+            }
+            return true;
         }
         
-        function selectTargetDigit(digit) {
-            selectedTargetDigit = digit;
-            
-            // ボタンの選択状態を更新
-            document.querySelectorAll('.digit-btn').forEach(btn => {
-                btn.classList.remove('selected');
-            });
-            event.target.classList.add('selected');
-        }
+
         
+        // 数字入力が3桁揃ったら判定ボタンを有効化
+        function checkInputComplete() {
+            const v1 = document.getElementById('digit1').value;
+            const v2 = document.getElementById('digit2').value;
+            const v3 = document.getElementById('digit3').value;
+            const submitBtn = document.getElementById('submit-btn');
+            
+            if (v1 && v2 && v3) {
+                submitBtn.disabled = false;
+                submitBtn.style.display = 'block';
+            } else {
+                submitBtn.disabled = true;
+                submitBtn.style.display = 'none';
+            }
+        }
+
+        // エンターキーでも送信可能
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const v1 = document.getElementById('digit1').value;
+                const v2 = document.getElementById('digit2').value;
+                const v3 = document.getElementById('digit3').value;
+                if (v1 && v2 && v3) {
+                    document.querySelector('form.input-group').submit();
+                }
+            }
+        });
+
         // ページ読み込み時にメモ状態を復元
         document.addEventListener('DOMContentLoaded', function() {
+            // 入力フィールドをクリア
+            document.querySelectorAll('.digit-input').forEach(input => {
+                input.value = '';
+            });
+            
             // 最初の入力フィールドにフォーカス
             document.querySelector('input[name="digit1"]').focus();
             
+            // ページ更新時にアイテムを完全リセット
+            localStorage.removeItem('numeronUsedItems');
+            
+            // アイテムボタンをリセット
+            document.querySelectorAll('.item-btn').forEach(btn => {
+                btn.classList.remove('used', 'selected');
+            });
+            
+
+            
             // 入力フィールド間の自動フォーカス移動
             const digitInputs = document.querySelectorAll('.digit-input');
+            
             digitInputs.forEach((input, index) => {
-                input.addEventListener('input', function() {
-                    if (this.value.length === 1 && index < digitInputs.length - 1) {
-                        digitInputs[index + 1].focus();
+                // キー入力時の処理
+                input.addEventListener('keydown', function(e) {
+                    // 数字キー（0-9）の場合
+                    if (e.key >= '0' && e.key <= '9') {
+                        // 現在の値をクリアして新しい値を設定
+                        this.value = e.key;
+                        
+                        // 次のフィールドに移動
+                        if (index < digitInputs.length - 1) {
+                            digitInputs[index + 1].focus();
+                        }
+                        
+                        checkInputComplete();
+                        e.preventDefault();
+                    }
+                    // Backspaceキーで前のフィールドに移動
+                    else if (e.key === 'Backspace') {
+                        if (this.value === '' && index > 0) {
+                            digitInputs[index - 1].focus();
+                        }
+                        checkInputComplete();
                     }
                 });
                 
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
-                        digitInputs[index - 1].focus();
+                // 入力値の検証（数字以外を除去）
+                input.addEventListener('input', function(e) {
+                    // 数字以外の文字を除去
+                    this.value = this.value.replace(/\D/g, '');
+                    
+                    // 1文字に制限
+                    if (this.value.length > 1) {
+                        this.value = this.value.slice(0, 1);
+                    }
+                    
+                    checkInputComplete();
+                });
+                
+                // ペースト時の処理
+                input.addEventListener('paste', function(e) {
+                    e.preventDefault();
+                    const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+                    const digits = pastedText.replace(/\D/g, '').slice(0, 3);
+                    
+                    if (digits.length === 3) {
+                        digitInputs[0].value = digits[0];
+                        digitInputs[1].value = digits[1];
+                        digitInputs[2].value = digits[2];
+                        checkInputComplete();
                     }
                 });
             });
-            
-            // アイテムボタンにイベントリスナーを追加
-            const itemButtons = document.querySelectorAll('.item-btn');
-            itemButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const itemName = this.getAttribute('data-item');
-                    console.log('Item button clicked:', itemName);
-                    toggleItem(itemName);
-                });
-            });
-            
-            // メモ状態を復元
-            const savedExcluded = localStorage.getItem('numeronExcludedNumbers');
-            if (savedExcluded) {
-                excludedNumbers = new Set(JSON.parse(savedExcluded));
-                updateMemoButtons();
-            }
-            
-            // アイテム選択状態を復元
-            const savedItems = localStorage.getItem('numeronSelectedItems');
-            if (savedItems) {
-                selectedItems = new Set(JSON.parse(savedItems));
-                selectedItems.forEach(itemName => {
-                    const button = document.querySelector(`button[data-item="${itemName}"]`);
-                    if (button) {
-                        button.classList.add('selected');
-                        if (itemName === 'TARGET') {
-                            document.getElementById('target-ui').style.display = 'block';
-                        }
-                    }
-                });
-                updateItemButtons();
-            }
-            
-            // DOUBLEコール状態をチェック
-            checkDoubleCallStatus();
         });
-        
-        function checkDoubleCallStatus() {
-            // セッションからDOUBLEコール可能状態を確認
-            fetch('/check-double-call')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.double_call_available) {
-                        // DOUBLEコール可能な場合、特別なUIを表示
-                        showDoubleCallUI();
-                    }
-                })
-                .catch(error => console.error('Error checking double call status:', error));
-        }
-        
-        function showDoubleCallUI() {
-            // DOUBLEコール用の特別なUIを表示
-            const messageDiv = document.querySelector('.message');
-            messageDiv.textContent = 'DOUBLE効果発動中！2回連続でコールできます';
-            messageDiv.className = 'message double-call';
-            messageDiv.style.display = 'flex';
-        }
     </script>
 </body>
 </html> 
