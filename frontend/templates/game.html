@@ -725,6 +725,7 @@
             <div class="left-panel">
                 <div class="input-section">
                     <form method="post" class="input-group" onsubmit="return handleSubmit(event)">
+                        <input type="hidden" name="guess" id="guess-input">
                         <div class="digit-inputs">
                             <input type="text" name="digit1" id="digit1" maxlength="1" pattern="\d" class="digit-input" autocomplete="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')" {% if game_ended %}disabled{% endif %}>
                             <input type="text" name="digit2" id="digit2" maxlength="1" pattern="\d" class="digit-input" autocomplete="off" spellcheck="false" readonly onfocus="this.removeAttribute('readonly')" {% if game_ended %}disabled{% endif %}>
@@ -989,13 +990,7 @@
 
             // 数字入力時はguessをhiddenで送信
             if (digit1 && digit2 && digit3 && !usedItem) {
-                let guessInput = document.querySelector('input[name="guess"]');
-                if (!guessInput) {
-                    guessInput = document.createElement('input');
-                    guessInput.type = 'hidden';
-                    guessInput.name = 'guess';
-                    event.target.appendChild(guessInput);
-                }
+                const guessInput = document.getElementById('guess-input');
                 guessInput.value = digit1 + digit2 + digit3;
                 
                 // 数字入力時に使用済みアイテムをリセット（新しいターン）
@@ -1027,6 +1022,14 @@
                 const v2 = document.getElementById('digit2').value;
                 const v3 = document.getElementById('digit3').value;
                 if (v1 && v2 && v3) {
+                    // guessフィールドに値を設定
+                    const guessInput = document.getElementById('guess-input');
+                    guessInput.value = v1 + v2 + v3;
+                    
+                    // 使用済みアイテムをリセット（新しいターン）
+                    localStorage.removeItem('numeronUsedItems');
+                    
+                    // フォームを送信
                     document.querySelector('form.input-group').submit();
                 }
             }

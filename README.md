@@ -14,11 +14,9 @@ numer0n/
 │   └── requirements.txt  # Python依存関係
 ├── frontend/
 │   ├── static/
-│   │   ├── game_item.js  # アイテム機能
-│   │   └── game_memo.js  # メモ機能
+│   │   └── game_item.js  # アイテム機能
 │   └── templates/
 │       └── game.html     # メインゲーム画面
-├── logs/                 # ルートログ保存用ディレクトリ
 └── README.md
 ```
 
@@ -48,17 +46,19 @@ numer0n/
 - **BITE**: 数字のみ一致
 - 3 EATで正解！
 
-### アイテム機能
-- **GIVEUP**: 答えを公開し、ゲーム続行（メモリセット）
+### 入力方法
+- 3つの入力フィールドに数字を入力
+- 3桁揃うと「enterで結果判定」メッセージが表示
+- **Enterキー**で結果判定を実行
+- 半角・全角数字に対応
 
-### メモ機能
-- 0~9ボタンでグレーON/OFF切り替え
-- 3EAT達成時とGIVEUP使用時に自動リセット
+### アイテム機能
+- **GIVEUP**: 答えを公開し、ゲーム終了
 
 ### ゲーム動作
 - ターン制（数字入力時のみカウントアップ）
 - 1ターンにアイテム1個まで使用可能
-- 3EAT達成後もゲーム継続
+- 3EAT達成後もゲーム継続可能
 
 ## 技術スタック
 
@@ -66,7 +66,7 @@ numer0n/
 - **Frontend**: HTML + CSS + JavaScript + Jinja2
 - **Port**: 3000
 
-## 実行系統
+## 実行環境
 
 - Python (Flask)
 - JavaScript (Vanilla)
