@@ -68,7 +68,9 @@ def use_item(item_name, computer_number, target_digit=None):
     if item_name == 'GIVEUP':
         return {
             'effect': f"GIVE UP! 答えは {''.join(map(str, computer_number))} です",
-            'answer': ''.join(map(str, computer_number))
+            'answer': ''.join(map(str, computer_number)),
+            'game_ended': True,
+            'hide_message': True
         }
     return {'effect': "不明なアイテムです"}
 
@@ -85,6 +87,7 @@ def index():
             'turn': 1,
             'used_items': [],
             'item_used_this_turn': False,
+            'game_ended': False,
             'start_time': datetime.now(timezone.utc).isoformat()
         })
         app.logger.info(f"New game started: {session['computer_number']}")
@@ -116,14 +119,20 @@ def index():
                 session['history'].append(result['effect'])
                 session['item_used_this_turn'] = True
                 session['used_items'].append(item)
-                msg, msg_type = result['effect'], 'info'
+                if result.get('game_ended'):
+                    session['game_ended'] = True
+                if result.get('hide_message'):
+                    msg, msg_type = '', 'empty'
+                else:
+                    msg, msg_type = result['effect'], 'info'
         session.modified = True
 
     return render_template('game.html',
                            turn=session.get('turn'),
                            history=session.get('history'),
                            message=msg,
-                           message_type=msg_type)
+                           message_type=msg_type,
+                           game_ended=session.get('game_ended', False))
 
 @app.route('/use-item', methods=['POST'])
 def use_item_api():
@@ -135,6 +144,8 @@ def use_item_api():
 
     result = use_item(item_name, computer_number)
     session['history'].append(result['effect'])
+    if result.get('game_ended'):
+        session['game_ended'] = True
     session.modified = True
     app.logger.info(f"Item used: {item_name}, Result: {result['effect']}")
     return jsonify(result)
