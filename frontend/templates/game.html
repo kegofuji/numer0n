@@ -13,7 +13,7 @@
         
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
             min-height: 100vh;
             color: #333;
             line-height: 1.6;
@@ -851,19 +851,36 @@
             const digitInputs = document.querySelectorAll('.digit-input');
             
             digitInputs.forEach((input, index) => {
-                // キー入力時の処理
+                // 全角数字を半角数字に変換する関数
+                function convertFullWidthToHalfWidth(str) {
+                    return str.replace(/[０-９]/g, function(s) {
+                        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+                    });
+                }
+                
+                // 数字入力処理の統一関数
+                function handleDigitInput(digit, inputElement, currentIndex) {
+                    // 現在のフィールドが空の場合のみ値を設定
+                    if (inputElement.value === '') {
+                        inputElement.value = digit;
+                        
+                        // 次のフィールドに移動
+                        if (currentIndex < digitInputs.length - 1) {
+                            digitInputs[currentIndex + 1].focus();
+                        }
+                    } else {
+                        // 既に値がある場合は上書き
+                        inputElement.value = digit;
+                    }
+                    
+                    checkInputComplete();
+                }
+                
+                // キー入力時の処理（半角数字のみ）
                 input.addEventListener('keydown', function(e) {
                     // 数字キー（0-9）の場合
                     if (e.key >= '0' && e.key <= '9') {
-                        // 現在の値をクリアして新しい値を設定
-                        this.value = e.key;
-                        
-                        // 次のフィールドに移動
-                        if (index < digitInputs.length - 1) {
-                            digitInputs[index + 1].focus();
-                        }
-                        
-                        checkInputComplete();
+                        handleDigitInput(e.key, this, index);
                         e.preventDefault();
                     }
                     // Backspaceキーで前のフィールドに移動
@@ -873,16 +890,42 @@
                         }
                         checkInputComplete();
                     }
+                    // 矢印キーでの移動
+                    else if (e.key === 'ArrowLeft' && index > 0) {
+                        digitInputs[index - 1].focus();
+                        e.preventDefault();
+                    }
+                    else if (e.key === 'ArrowRight' && index < digitInputs.length - 1) {
+                        digitInputs[index + 1].focus();
+                        e.preventDefault();
+                    }
                 });
                 
-                // 入力値の検証（数字以外を除去）
+                // 入力値の検証（全角数字の変換を含む）
                 input.addEventListener('input', function(e) {
+                    let originalValue = this.value;
+                    
+                    // 全角数字を半角数字に変換
+                    let convertedValue = convertFullWidthToHalfWidth(originalValue);
+                    
                     // 数字以外の文字を除去
-                    this.value = this.value.replace(/\D/g, '');
+                    convertedValue = convertedValue.replace(/\D/g, '');
                     
                     // 1文字に制限
-                    if (this.value.length > 1) {
-                        this.value = this.value.slice(0, 1);
+                    if (convertedValue.length > 1) {
+                        convertedValue = convertedValue.slice(0, 1);
+                    }
+                    
+                    // 値が変更された場合のみ処理
+                    if (convertedValue !== originalValue) {
+                        this.value = convertedValue;
+                        
+                        // 全角数字が入力された場合、次のフィールドに移動
+                        if (convertedValue && originalValue !== convertedValue && index < digitInputs.length - 1) {
+                            setTimeout(() => {
+                                digitInputs[index + 1].focus();
+                            }, 0);
+                        }
                     }
                     
                     checkInputComplete();
@@ -892,7 +935,9 @@
                 input.addEventListener('paste', function(e) {
                     e.preventDefault();
                     const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-                    const digits = pastedText.replace(/\D/g, '').slice(0, 3);
+                    // 全角数字を半角数字に変換してから処理
+                    const convertedText = convertFullWidthToHalfWidth(pastedText);
+                    const digits = convertedText.replace(/\D/g, '').slice(0, 3);
                     
                     if (digits.length === 3) {
                         digitInputs[0].value = digits[0];
@@ -900,6 +945,11 @@
                         digitInputs[2].value = digits[2];
                         checkInputComplete();
                     }
+                });
+                
+                // クリック時の処理（フォーカス移動を防ぐ）
+                input.addEventListener('click', function(e) {
+                    this.select();
                 });
             });
         });
