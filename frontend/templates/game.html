@@ -121,8 +121,10 @@
             box-shadow: 0 15px 40px rgba(0,0,0,0.4);
             text-align: center;
             margin-top: 0;
-            border: 1px solid #ff0000;
-            border-top: 2px solid #ff0000;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         
 
@@ -378,9 +380,7 @@
             display: flex;
             flex-direction: column;
             gap: 25px;
-            height: auto;
-            border: 1px solid #ff0000;
-            border-top: 2px solid #ff0000;
+            height: 400px;
         }
         
         .history-section {
@@ -418,12 +418,8 @@
         
         /* 画像通りの履歴表示スタイル */
         .history-display {
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #2d1b69 100%);
             border-radius: 0;
             padding: 25px;
-            border: 1px solid #ff0000;
-            border-top: 2px solid #ff0000;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
             min-height: 300px;
         }
         
@@ -749,9 +745,10 @@
                                 gap: 16px !important;
                                 margin: 20px 0 !important;
                                 width: 100%;
+                                align-items: center !important;
                             }
                             .item-btn {
-                                width: 100% !important;
+                                width: 170px !important;
                                 font-size: 1.2rem !important;
                                 padding: 18px 0 !important;
                                 box-sizing: border-box;
