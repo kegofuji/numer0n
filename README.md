@@ -22,6 +22,12 @@ numer0n/
 
 ## セットアップ
 
+### 方法1: 簡単起動（推奨）
+```bash
+./start.sh
+```
+
+### 方法2: 手動起動
 1. **依存関係のインストール**
    ```bash
    cd backend
@@ -30,7 +36,12 @@ numer0n/
 
 2. **サーバーの起動**
    ```bash
-   python app.py
+   # プロジェクトルートから
+   python3 run.py
+   
+   # または、backendディレクトリから
+   cd backend
+   python3 app.py
    ```
 
 3. **ブラウザでアクセス**
