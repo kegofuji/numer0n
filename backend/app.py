@@ -2,12 +2,11 @@ import os
 import logging
 from datetime import datetime, timezone
 from flask import Flask, render_template, request, session, redirect, url_for, jsonify
-from dotenv import load_dotenv
 from config import config
 import random
 
-# 環境変数を読み込み
-load_dotenv()
+# 環境変数を直接取得
+SECRET_KEY = os.environ.get("SECRET_KEY", "default-secret-key-change-in-production")
 
 # ----------------------------------------
 # Flask アプリケーションファクトリ
@@ -16,7 +15,7 @@ def create_app(config_name=None):
     config_name = config_name or os.getenv('FLASK_ENV', 'development')
     app = Flask(__name__, template_folder='../frontend/templates')
     app.config.from_object(config[config_name])
-    app.secret_key = os.getenv('SECRET_KEY', 'your_default_secret_key')
+    app.secret_key = SECRET_KEY
     setup_logging(app)
     return app
 
