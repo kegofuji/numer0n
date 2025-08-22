@@ -31,6 +31,11 @@ class ProductionConfig(Config):
     """本番環境設定"""
     DEBUG = False
     SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    
+    # Render環境での設定
+    LOG_LEVEL = 'WARNING'
     
 class TestingConfig(Config):
     """テスト環境設定"""

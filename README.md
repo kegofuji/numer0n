@@ -17,6 +17,7 @@ numer0n/
 │   │   └── game_item.js  # アイテム機能
 │   └── templates/
 │       └── game.html     # メインゲーム画面
+├── render.yaml           # Renderデプロイ設定
 └── README.md
 ```
 
@@ -46,8 +47,40 @@ numer0n/
 
 3. **ブラウザでアクセス**
    ```
-   http://localhost:3000
+   http://localhost:5000
    ```
+
+## 🚀 Renderでのデプロイ
+
+### 事前準備
+1. [Render](https://render.com/) アカウントを作成
+2. GitHubリポジトリと連携
+
+### デプロイ手順
+1. **Renderダッシュボードで「New Web Service」を選択**
+2. **GitHubリポジトリを選択**
+3. **以下の設定を確認：**
+   - **Name**: `numeron-game`（任意）
+   - **Environment**: `Python`
+   - **Build Command**: `pip install -r backend/requirements.txt`
+   - **Start Command**: `gunicorn app:app`
+   - **Plan**: `Free`（無料プラン）
+
+4. **環境変数を設定：**
+   - `FLASK_ENV`: `production`
+   - `SECRET_KEY`: 自動生成（または手動設定）
+   - `LOG_LEVEL`: `INFO`
+
+5. **「Create Web Service」をクリック**
+
+### デプロイ後の確認
+- デプロイが完了すると、`https://your-app-name.onrender.com` のようなURLが生成されます
+- 初回アクセス時に少し時間がかかる場合があります（コールドスタート）
+
+### 注意事項
+- 無料プランでは15分間アクセスがないとスリープ状態になります
+- 初回アクセス時に再起動が必要な場合があります
+- ログはRenderダッシュボードで確認できます
 
 ## 遊び方
 
@@ -75,7 +108,7 @@ numer0n/
 
 - **Backend**: Python + Flask
 - **Frontend**: HTML + CSS + JavaScript + Jinja2
-- **Port**: 3000
+- **Port**: 5000
 
 ## 実行環境
 
