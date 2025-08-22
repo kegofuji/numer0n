@@ -12,11 +12,7 @@ services:
         value: production
       - key: SECRET_KEY
         generateValue: true
+      - key: DEBUG
+        value: "False"
       - key: LOG_LEVEL
         value: INFO
-      - key: SESSION_COOKIE_SECURE
-        value: true
-      - key: MAX_TURNS
-        value: "12"
-      - key: NUMBER_LENGTH
-        value: "3"

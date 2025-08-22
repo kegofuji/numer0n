@@ -69,20 +69,8 @@ numer0n/
 4. **環境変数を設定：**
    - `FLASK_ENV`: `production`
    - `SECRET_KEY`: 自動生成（または手動設定）
+   - `DEBUG`: `False`（本番環境用）
    - `LOG_LEVEL`: `INFO`
-   - `SESSION_COOKIE_SECURE`: `true`（HTTPS環境用）
-   - `MAX_TURNS`: `12`（ゲームの最大ターン数）
-   - `NUMBER_LENGTH`: `3`（数字の桁数）
-
-### 🔐 環境変数の重要性
-
-**重要**: 機密情報やキーは `.env` ファイルに置くのではなく、Renderダッシュボードの Environment Variables に設定してください。
-
-- **SECRET_KEY**: セッション暗号化用（自動生成推奨）
-- **SESSION_COOKIE_SECURE**: HTTPS環境でのセキュリティ強化
-- **LOG_LEVEL**: 本番環境でのログ出力レベル制御
-- **MAX_TURNS**: ゲーム設定のカスタマイズ
-- **NUMBER_LENGTH**: ゲーム設定のカスタマイズ
 
 5. **「Create Web Service」をクリック**
 
@@ -94,6 +82,13 @@ numer0n/
 - 無料プランでは15分間アクセスがないとスリープ状態になります
 - 初回アクセス時に再起動が必要な場合があります
 - ログはRenderダッシュボードで確認できます
+
+### 環境変数の詳細
+- **SECRET_KEY**: Flaskセッションの暗号化キー（自動生成推奨）
+- **DEBUG**: デバッグモード（本番環境ではFalse）
+- **FLASK_ENV**: Flask環境（production/development）
+- **LOG_LEVEL**: ログレベル（INFO/WARNING/ERROR）
+- **PORT**: ポート番号（Renderで自動設定）
 
 ## 遊び方
 
