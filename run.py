@@ -18,13 +18,13 @@ from app import app
 
 if __name__ == '__main__':
     print("🚀 Numeron Game を起動しています...")
-    print("📍 ブラウザで http://localhost:3000 にアクセスしてください")
+    print("📍 ブラウザで http://localhost:3001 にアクセスしてください")
     print("⏹️  停止するには Ctrl+C を押してください")
     print("-" * 50)
     
     app.run(
         debug=True,
         host='0.0.0.0',
-        port=5000,
+        port=3001,
         use_reloader=True
     )

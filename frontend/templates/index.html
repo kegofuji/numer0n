@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numeron - ゲームモード選択</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 50%, #2d1b69 100%);
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            margin-bottom: 60px;
+        }
+        
+        .header h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+        
+        .header .subtitle {
+            font-size: 1.5rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 10px;
+        }
+        
+        .header .description {
+            font-size: 1.1rem;
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+        
+        .game-modes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .mode-card {
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+            padding: 40px 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .mode-card:hover {
+            background: rgba(255,255,255,0.15);
+            border-color: rgba(255,255,255,0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        
+        .mode-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+        
+        .mode-card .icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .mode-card .description {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+        
+        .mode-card .features {
+            list-style: none;
+            text-align: left;
+        }
+        
+        .mode-card .features li {
+            padding: 5px 0;
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+        
+        .mode-card .features li:before {
+            content: "✓ ";
+            color: #4CAF50;
+            font-weight: bold;
+        }
+        
+        .items-info {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .items-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .item-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .item-card .name {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .item-card .type {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        
+        .attack-item { border-left: 4px solid #FF6B6B; }
+        .defense-item { border-left: 4px solid #4ECDC4; }
+        
+        /* アイテム説明ツールチップ */
+        .item-tooltip {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            z-index: 10000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            border: 2px solid #667eea;
+            display: none;
+        }
+        
+        .tooltip-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #667eea;
+            text-align: center;
+        }
+        
+        .tooltip-type {
+            font-size: 1rem;
+            margin-bottom: 20px;
+            text-align: center;
+            opacity: 0.8;
+        }
+        
+        .tooltip-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        
+        .tooltip-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        
+        .tooltip-close:hover {
+            opacity: 1;
+        }
+        
+        .tooltip-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+            display: none;
+        }
+        
+        .item-card {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .item-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 768px) {
+            .game-modes {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 3rem;
+            }
+            
+            .items-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 Numeron</h1>
+            <div class="subtitle">数字当てゲーム（3桁戦）＋アイテム付き</div>
+            <div class="description">
+                0〜9の数字から重複なしで3桁の番号を設定し、相手の番号を当てるゲームです。<br>
+                EAT（数字+桁一致）・BITE（数字のみ一致）のヒントを頼りに、先に3EATを達成した方が勝利！
+            </div>
+        </div>
+        
+        <div class="game-modes">
+            <div class="mode-card" onclick="startGame('single')">
+                <div class="icon">🤖</div>
+                <h3>1人用</h3>
+                <div class="description">人間 vs AI</div>
+                <ul class="features">
+                    <li>AIとの対戦</li>
+                    <li>メモ用数字カード表示</li>
+                    <li>AIの番号は非表示</li>
+                    <li>6種類のアイテム使用可能</li>
+                </ul>
+            </div>
+            
+            <div class="mode-card" onclick="startGame('two')">
+                <div class="icon">👥</div>
+                <h3>2人用</h3>
+                <div class="description">人間 vs 人間</div>
+                <ul class="features">
+                    <li>友達や家族と対戦</li>
+                    <li>互いの番号は非表示</li>
+                    <li>6種類のアイテム使用可能</li>
+                    <li>同じ画面で交互にプレイ</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="items-info">
+            <h3>🎯 アイテム機能</h3>
+            <div class="items-grid">
+                <div class="item-card attack-item" onclick="showItemTooltip('DOUBLE', '攻撃系')">
+                    <div class="name">DOUBLE</div>
+                    <div class="type">攻撃系</div>
+                </div>
+                <div class="item-card attack-item" onclick="showItemTooltip('HIGH&LOW', '攻撃系')">
+                    <div class="name">HIGH&LOW</div>
+                    <div class="type">攻撃系</div>
+                </div>
+                <div class="item-card attack-item" onclick="showItemTooltip('TARGET', '攻撃系')">
+                    <div class="name">TARGET</div>
+                    <div class="type">攻撃系</div>
+                </div>
+                <div class="item-card attack-item" onclick="showItemTooltip('SLASH', '攻撃系')">
+                    <div class="name">SLASH</div>
+                    <div class="type">攻撃系</div>
+                </div>
+                <div class="item-card defense-item" onclick="showItemTooltip('SHUFFLE', '防御系')">
+                    <div class="name">SHUFFLE</div>
+                    <div class="type">防御系</div>
+                </div>
+                <div class="item-card defense-item" onclick="showItemTooltip('CHANGE', '防御系')">
+                    <div class="name">CHANGE</div>
+                    <div class="type">防御系</div>
+                </div>
+            </div>
+            <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+                1ターンに1個まで使用可能。使用済みアイテムは勝敗判定まで再使用不可。
+            </p>
+        </div>
+    </div>
+    
+    <!-- アイテム説明ツールチップ -->
+    <div class="tooltip-overlay" id="tooltip-overlay"></div>
+    <div class="item-tooltip" id="item-tooltip">
+        <button class="tooltip-close" onclick="hideItemTooltip()">&times;</button>
+        <div class="tooltip-header" id="tooltip-header"></div>
+        <div class="tooltip-type" id="tooltip-type"></div>
+        <div class="tooltip-description" id="tooltip-description"></div>
+    </div>
+    
+    <script>
+        function startGame(mode) {
+            if (mode === 'single') {
+                window.location.href = '/game?mode=single';
+            } else if (mode === 'two') {
+                window.location.href = '/game?mode=two';
+            }
+        }
+        
+        // アイテム説明ツールチップ機能
+        function showItemTooltip(itemName, itemType) {
+            const tooltip = document.getElementById('item-tooltip');
+            const overlay = document.getElementById('tooltip-overlay');
+            const header = document.getElementById('tooltip-header');
+            const type = document.getElementById('tooltip-type');
+            const description = document.getElementById('tooltip-description');
+            
+            // アイテム説明を設定
+            const itemDescriptions = {
+                'DOUBLE': '2回連続でコール可能になります。ただし、1桁が開示されます。2回目のコール時はアイテムを使用できません。',
+                'HIGH&LOW': '相手の番号の各桁がHIGH（5-9）かLOW（0-4）かを判明させます。第3回ではHIGH/LOWの数字数も表示されます。',
+                'TARGET': '指定した数字が相手の番号に含まれているかを確認できます。含まれている場合は、その桁も判明します。',
+                'SLASH': '相手の番号の最大数から最小数を引いた値（スラッシュナンバー）を取得できます。',
+                'SHUFFLE': '自分の番号を並べ替えることができます。',
+                'CHANGE': '自分の番号の1桁を手持ちカードと交換できます（HIGH/LOWの性質は保持されます）。'
+            };
+            
+            header.textContent = itemName;
+            type.textContent = itemType;
+            description.textContent = itemDescriptions[itemName] || '説明がありません。';
+            
+            // 表示
+            overlay.style.display = 'block';
+            tooltip.style.display = 'block';
+        }
+        
+        function hideItemTooltip() {
+            const tooltip = document.getElementById('item-tooltip');
+            const overlay = document.getElementById('tooltip-overlay');
+            
+            tooltip.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+        
+        // オーバーレイクリックで閉じる
+        document.getElementById('tooltip-overlay').addEventListener('click', hideItemTooltip);
+        
+        // ESCキーで閉じる
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                hideItemTooltip();
+            }
+        });
+    </script>
+</body>
+</html>
